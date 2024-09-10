@@ -19,7 +19,7 @@ const TestimonialCard = ({ name, image, score, quote, googleReview }: Testimonia
         <div>
           <h3 className="font-bold text-lg text-gray-800">{name}</h3>
           <div className="flex items-center">
-            <img src="/google-logo.svg" alt="Google" className="w-5 h-5 mr-1" />
+            <img src="/images/google-logo.svg" alt="Google" className="w-5 h-5 mr-1" />
             {[...Array(5)].map((_, i) => (
               <Star key={i} className="w-4 h-4 fill-current text-yellow-400" />
             ))}
@@ -44,28 +44,28 @@ export default function TestimonialSection() {
   const testimonials: TestimonialProps[] = [
     {
       name: "Serene Kaur",
-      image: "https://source.unsplash.com/random/100x100?face=1",
+      image: "/images/team-01.png",
       score: "Got 7.5 Band",
       quote: "The full-length tests mimicked the real exam perfectly. My confidence soared, and I exceeded my target!",
       googleReview: "Excellent IELTS preparation program. Highly recommended for serious test-takers!"
     },
     {
       name: "Ameya Deshmane",
-      image: "https://source.unsplash.com/random/100x100?face=2",
+      image: "/images/team-02.png",
       score: "Got 8.5 Band",
       quote: "The in-depth topic videos and strategy guides were a goldmine. I aced the exam with an 8.5!",
       googleReview: "Top-notch materials and support. Worth every penny for my dream score."
     },
     {
       name: "Sonia Pinto",
-      image: "https://source.unsplash.com/random/100x100?face=3",
+      image: "/images/team-03.png",
       score: "Got 7 Band",
       quote: "The live evaluation with feedback gave me specific areas to focus on. I surprised myself with a 7!",
       googleReview: "Fantastic program that boosted my confidence. The live evaluations were game-changers."
     },
     {
       name: "Ravi Purohit",
-      image: "https://source.unsplash.com/random/100x100?face=4",
+      image: "/images/team-04.png",
       score: "Jumped from 5.5 to 7 Band",
       quote: "It identified my weak areas and pushed me to refine my skills. I managed to jump from a 5.5 to a 7!",
       googleReview: "Incredible improvement in my scores. The personalized approach really works!"
