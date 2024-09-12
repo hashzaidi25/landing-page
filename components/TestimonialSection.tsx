@@ -2,6 +2,7 @@ import { Star } from "lucide-react"
 import ShimmerButton from "@/components/magicui/shimmer-button";
 import NumberTicker from "@/components/magicui/number-ticker"; // Changed to default import
 import SectionBackground from './SectionBackground';
+import GradientHeading from "@/components/GradientHeading";
 
 interface TestimonialProps {
   name: string;
@@ -73,16 +74,16 @@ export default function TestimonialSection() {
   ]
 
   return (
-<SectionBackground className="py-16" gradientStart="from-blue-50" gradientEnd="to-purple-50">
-        <div className="mx-auto max-w-7xl px-6 lg:px-8">
-        <h2 className="text-4xl md:text-5xl font-extrabold text-center mb-4 text-gray-800">
+    <SectionBackground className="py-16" gradientStart="from-blue-50" gradientEnd="to-purple-50">
+      <div className="mx-auto max-w-7xl px-6 lg:px-8">
+        <GradientHeading className="text-4xl md:text-5xl mb-4">
           We've helped <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-purple-600">
             <NumberTicker value={120321} />
           </span> people
-        </h2>
-        <h3 className="text-2xl md:text-3xl font-bold text-center mb-12 text-gray-600">
+        </GradientHeading>
+        <GradientHeading as="h3" className="text-2xl md:text-3xl mb-12">
           score 8+ bands in IELTS
-        </h3>
+        </GradientHeading>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
           {testimonials.map((testimonial, index) => (
             <TestimonialCard key={index} {...testimonial} />

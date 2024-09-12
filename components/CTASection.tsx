@@ -102,7 +102,6 @@ export default function CTASection() {
   const [isLoading, setIsLoading] = useState(false);
   const [globalCooldown, setGlobalCooldown] = useState(false);
   const [cooldownEndTime, setCooldownEndTime] = useState<number | null>(null);
-  const [preferredVerificationMethod, setPreferredVerificationMethod] = useState<'phone' | 'email'>('email');
   const [retryCount, setRetryCount] = useState(0);
   const [cooldownTimeRemaining, setCooldownTimeRemaining] = useState<number | null>(null);
   const [confirmationResult, setConfirmationResult] = useState<ConfirmationResult | null>(null);
@@ -157,13 +156,8 @@ export default function CTASection() {
           <motion.form 
             onSubmit={(e) => { 
               e.preventDefault(); 
-              console.log("Form submitted. preferredVerificationMethod:", preferredVerificationMethod);
               if (!isLoading && !isCooldown && !globalCooldown) {
-                if (preferredVerificationMethod === 'phone') {
-                  debouncedSendOtp();
-                } else {
-                  sendEmailVerification();
-                }
+                debouncedSendOtp();
               } else {
                 console.log("Form submission aborted due to loading or cooldown state");
               }
@@ -191,73 +185,45 @@ export default function CTASection() {
               required
               variants={fadeInUp}
             />
-            <motion.div className="flex items-center justify-center space-x-4 mb-4" variants={fadeInUp}>
-              <label className="inline-flex items-center">
-                <input
-                  type="radio"
-                  name="verification-method"
-                  value="email"
-                  checked={preferredVerificationMethod === 'email'}
-                  onChange={() => setPreferredVerificationMethod('email')}
-                  className="form-radio h-5 w-5 text-blue-600"
-                />
-                <span className="ml-2">Email Verification</span>
-              </label>
-              <label className="inline-flex items-center">
-                <input
-                  type="radio"
-                  name="verification-method"
-                  value="phone"
-                  checked={preferredVerificationMethod === 'phone'}
-                  onChange={() => setPreferredVerificationMethod('phone')}
-                  className="form-radio h-5 w-5 text-blue-600"
-                />
-                <span className="ml-2">Phone Verification</span>
-              </label>
-            </motion.div>
-            <AnimatePresence>
-              {preferredVerificationMethod === 'phone' && (
-                <motion.div
-                  initial={{ opacity: 0, height: 0 }}
-                  animate={{ opacity: 1, height: 'auto' }}
-                  exit={{ opacity: 0, height: 0 }}
-                  transition={{ duration: 0.3 }}
+            <motion.div
+              initial={{ opacity: 1, height: 'auto' }}
+              animate={{ opacity: 1, height: 'auto' }}
+              exit={{ opacity: 0, height: 0 }}
+              transition={{ duration: 0.3 }}
+            >
+              <div className="flex mb-4">
+                <select
+                  value={selectedCountry.value}
+                  onChange={(e) => {
+                    const country = countryOptions.find(c => c.value === e.target.value);
+                    if (country) setSelectedCountry(country);
+                  }}
+                  className="w-1/3 p-3 rounded-l border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all duration-300"
                 >
-                  <div className="flex mb-4">
-                    <select
-                      value={selectedCountry.value}
-                      onChange={(e) => {
-                        const country = countryOptions.find(c => c.value === e.target.value);
-                        if (country) setSelectedCountry(country);
-                      }}
-                      className="w-1/3 p-3 rounded-l border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all duration-300"
-                    >
-                      {countryOptions.map((country) => (
-                        <option key={country.value} value={country.value}>
-                          {country.label} ({country.dialCode})
-                        </option>
-                      ))}
-                    </select>
-                    <input
-                      type="tel"
-                      name="phone"
-                      placeholder="Your Phone Number"
-                      value={formData.phone}
-                      onChange={handleChange}
-                      className="w-2/3 p-3 rounded-r border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all duration-300"
-                      required
-                    />
-                  </div>
-                </motion.div>
-              )}
-            </AnimatePresence>
+                  {countryOptions.map((country) => (
+                    <option key={country.value} value={country.value}>
+                      {country.label} ({country.dialCode})
+                    </option>
+                  ))}
+                </select>
+                <input
+                  type="tel"
+                  name="phone"
+                  placeholder="Your Phone Number"
+                  value={formData.phone}
+                  onChange={handleChange}
+                  className="w-2/3 p-3 rounded-r border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all duration-300"
+                  required
+                />
+              </div>
+            </motion.div>
             <motion.div variants={fadeInUp}>
               <ShimmerButton 
                 type="submit" 
                 className="w-full text-lg py-3 bg-blue-600 text-white rounded-full font-semibold transition-all duration-300"
                 disabled={isLoading || isCooldown || globalCooldown}
               >
-                {isLoading ? "Sending..." : isCooldown || globalCooldown ? "Verification unavailable" : `Send ${preferredVerificationMethod === 'phone' ? 'OTP' : 'Email Verification'}`}
+                {isLoading ? "Sending..." : isCooldown || globalCooldown ? "Verification unavailable" : "Send OTP"}
               </ShimmerButton>
             </motion.div>
             {isCooldown && (
@@ -528,12 +494,12 @@ export default function CTASection() {
                 } else if (error.code === 'auth/too-many-requests') {
                   setCooldownPeriod(60); // Set cooldown to 60 seconds (1 minute)
                   alert("Too many requests. Please try again after 1 minute or use email verification.");
-                  setVerificationMethod('email');
+                  offerEmailVerification();
                 } else if (error.code === 'auth/invalid-phone-number') {
                   alert("The phone number is invalid. Please check and try again.");
                 } else {
                   alert(`Failed to send OTP. Please try email verification. Error: ${error.message}`);
-                  setVerificationMethod('email');
+                  offerEmailVerification();
                 }
               }).finally(() => {
                 setIsLoading(false);
@@ -620,6 +586,13 @@ export default function CTASection() {
           alert(`Failed to send email verification. Error: ${error.message}`);
         }
       });
+  };
+
+  const offerEmailVerification = () => {
+    const useEmail = window.confirm("Would you like to use email verification instead?");
+    if (useEmail) {
+      sendEmailVerification();
+    }
   };
 
   return (

@@ -2,14 +2,20 @@ import SectionBackground from './SectionBackground';
 import { Card } from "@/components/ui/card"
 import { Check } from "lucide-react"
 import ShimmerButton from "@/components/magicui/shimmer-button";
+import GradientHeading from "@/components/GradientHeading";
 
 export default function IsThisForMeSection() {
   return (
     <SectionBackground className="py-16" gradientStart="from-indigo-50" gradientEnd="to-blue-50">
       <div className="w-full max-w-3xl mx-auto p-6 space-y-6 rounded-lg">
-        <h2 className="text-4xl font-bold text-center text-gray-800">
-          Is this for me? <span className="text-5xl">🤔</span>
-        </h2>
+        <div className="flex flex-col items-center text-center">
+          <div className="flex items-center">
+            <GradientHeading className="text-4xl mb-2">
+              Is this for me?
+            </GradientHeading>
+            <span className="text-5xl ml-2">🤔</span>
+          </div>
+        </div>
         
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           {[
